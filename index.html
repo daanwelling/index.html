@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RTV Utrecht Graphic Generator</title>
   <style>
-    /* HAPTIC SEMIBOLD FONT IMPORT */
     @font-face {
       font-family: 'Haptic';
       src: url('Haptic-SemiBold.woff2') format('woff2'),
@@ -27,7 +26,6 @@
       align-items: flex-start;
     }
 
-    /* Bedieningspaneel links */
     .controls {
       width: 360px;
       background: #ffffff;
@@ -92,7 +90,6 @@
       background-color: #b0101b;
     }
 
-    /* SVG Voorbeeld rechts */
     .preview-container {
       width: 500px;
       background: #000;
@@ -110,7 +107,6 @@
 </head>
 <body>
 
-  <!-- BEDIENINGSPANEEL -->
   <div class="controls">
     <h2>Instellingen</h2>
 
@@ -127,14 +123,14 @@
     </div>
 
     <div class="field-group">
-      <label>Foto Positie X (Horizontaal)</label>
+      <label>Foto Positie X</label>
       <div class="range-group">
         <input type="range" id="pos-x-slider" min="-1000" max="1000" step="5" value="0">
       </div>
     </div>
 
     <div class="field-group">
-      <label>Foto Positie Y (Verticaal)</label>
+      <label>Foto Positie Y</label>
       <div class="range-group">
         <input type="range" id="pos-y-slider" min="-1000" max="1000" step="5" value="0">
       </div>
@@ -160,30 +156,29 @@
     <button class="export-btn" id="export-btn">Exporteer als JPG</button>
   </div>
 
-  <!-- CANVAS VOORBEELD (SVG) -->
   <div class="preview-container">
     <svg id="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1350">
       <defs>
         <style>
           .st-red { fill: #d91423; }
-          .st-white { fill: #fff; }
+          .st-white { fill: #ffffff; }
           .st-logo-shadow { filter: url(#drop-shadow-1); }
 
           .txt-onderwerp {
-            fill: #fff;
+            fill: #ffffff;
             font-size: 45px;
-            font-family: 'Haptic', Arial, Helvetica, sans-serif;
+            font-family: 'Haptic', 'Helvetica Neue', Arial, sans-serif;
             font-weight: 600;
           }
           .txt-kop {
             fill: #000000;
             font-size: 57px;
-            font-family: 'Haptic', Arial, Helvetica, sans-serif;
+            font-family: 'Haptic', 'Helvetica Neue', Arial, sans-serif;
             font-weight: 600;
           }
         </style>
 
-        <filter id="drop-shadow-1" x="59.94" y="25" width="198.48" height="120" filterUnits="userSpaceOnUse">
+        <filter id="drop-shadow-1" x="0" y="0" width="300" height="200" filterUnits="userSpaceOnUse">
           <feOffset dx="0" dy="0"/>
           <feGaussianBlur result="blur" stdDeviation="10"/>
           <feFlood flood-color="#000" flood-opacity=".5"/>
@@ -192,25 +187,25 @@
         </filter>
       </defs>
 
-      <!-- 1. ACHTERGROND / FOTO LAAG -->
+      <!-- 1. ACHTERGROND & FOTO -->
       <rect width="1080" height="1350" fill="#1a1a1a" />
-      <g id="photo-transform-group">
-        <image id="user-photo" href="" />
+      <g id="photo-container">
+        <image id="user-photo" href="" x="0" y="0" />
       </g>
 
       <!-- 2. ACHTERGRONDBALKEN -->
       <g id="BALKEN">
-        <rect id="blokje-onderwerp" class="st-red" x="90" y="940" width="60" height="60" rx="6" ry="6" opacity="0" />
+        <rect id="blokje-onderwerp" class="st-red" x="90" y="940" width="60" height="60" rx="6" ry="6" style="display: none;" />
         <rect id="balk-onderwerp" class="st-red" x="160" y="940" width="0" height="60" rx="6" ry="6" />
-        <rect id="balk-kop-1" class="st-white" x="90" y="1010" width="0" height="75" rx="5" ry="5" />
+        <rect id="balk-kop-1" class="st-white" x="90" y="1010" width="0" height="75" rx="6" ry="6" />
         <rect id="balk-kop-2" class="st-white" x="90" y="1095" width="0" height="75" rx="6" ry="6" />
       </g>
 
       <!-- 3. TEKSTEN -->
       <g id="TEKSTEN">
-        <text id="text-onderwerp" class="txt-onderwerp" transform="translate(180 985.37)"></text>
-        <text id="text-kop-1" class="txt-kop" transform="translate(115 1066.96)"></text>
-        <text id="text-kop-2" class="txt-kop" transform="translate(115 1151.96)"></text>
+        <text id="text-onderwerp" class="txt-onderwerp" x="180" y="985"></text>
+        <text id="text-kop-1" class="txt-kop" x="115" y="1066"></text>
+        <text id="text-kop-2" class="txt-kop" x="115" y="1151"></text>
       </g>
 
       <!-- 4. LOGO -->
@@ -234,28 +229,134 @@
   </div>
 
   <script>
-    // 1. BALKEN LOGICA
+    let posX = 0, posY = 0, scale = 1;
+    let imgWidth = 1080, imgHeight = 1350;
+
     function updateBalk(textId, balkId, padding = 50) {
       const textEl = document.getElementById(textId);
       const balkEl = document.getElementById(balkId);
-      const textWidth = textEl.getBBox().width;
+      
+      // Gebruik getBoundingClientRect voor betrouwbare breedteberekening
+      const textWidth = textEl.getComputedTextLength ? textEl.getComputedTextLength() : textEl.getBBox().width;
 
-      if (textWidth === 0) {
+      if (!textEl.textContent || textEl.textContent.trim() === '') {
         balkEl.setAttribute('width', 0);
       } else {
         balkEl.setAttribute('width', textWidth + padding);
       }
     }
 
+    function updateTransform() {
+      const imgEl = document.getElementById('user-photo');
+      const cx = imgWidth / 2;
+      const cy = imgHeight / 2;
+
+      const transformStr = `translate(${540 + posX} ${675 + posY}) scale(${scale}) translate(${-cx} ${-cy})`;
+      imgEl.setAttribute('transform', transformStr);
+    }
+
+    // TEKST INPUT LISTENERS
     document.getElementById('input-onderwerp').addEventListener('input', (e) => {
       const textEl = document.getElementById('text-onderwerp');
       const blokjeEl = document.getElementById('blokje-onderwerp');
       textEl.textContent = e.target.value;
       updateBalk('text-onderwerp', 'balk-onderwerp', 40);
-      blokjeEl.style.opacity = e.target.value.trim() !== "" ? "1" : "0";
+      blokjeEl.style.display = e.target.value.trim() !== "" ? "block" : "none";
     });
 
     document.getElementById('input-kop-1').addEventListener('input', (e) => {
       const textEl = document.getElementById('text-kop-1');
       textEl.textContent = e.target.value;
-      updateBalk('text-kop-1
+      updateBalk('text-kop-1', 'balk-kop-1', 50);
+    });
+
+    document.getElementById('input-kop-2').addEventListener('input', (e) => {
+      const textEl = document.getElementById('text-kop-2');
+      textEl.textContent = e.target.value;
+      updateBalk('text-kop-2', 'balk-kop-2', 50);
+    });
+
+    // FOTO UPLOAD
+    document.getElementById('input-photo').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imgEl = document.getElementById('user-photo');
+        
+        // Maak een HTML-afbeelding aan om de afmetingen uit te lezen
+        const i = new Image();
+        i.onload = function() {
+          imgWidth = i.width;
+          imgHeight = i.height;
+
+          imgEl.setAttribute('width', imgWidth);
+          imgEl.setAttribute('height', imgHeight);
+          imgEl.setAttribute('href', event.target.result);
+
+          // Schaal berekenen zodat de foto vullend start
+          const scaleX = 1080 / imgWidth;
+          const scaleY = 1350 / imgHeight;
+          scale = Math.max(scaleX, scaleY);
+
+          document.getElementById('scale-slider').value = scale;
+          posX = 0;
+          posY = 0;
+          document.getElementById('pos-x-slider').value = 0;
+          document.getElementById('pos-y-slider').value = 0;
+
+          updateTransform();
+        };
+        i.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('scale-slider').addEventListener('input', (e) => {
+      scale = parseFloat(e.target.value);
+      updateTransform();
+    });
+
+    document.getElementById('pos-x-slider').addEventListener('input', (e) => {
+      posX = parseFloat(e.target.value);
+      updateTransform();
+    });
+
+    document.getElementById('pos-y-slider').addEventListener('input', (e) => {
+      posY = parseFloat(e.target.value);
+      updateTransform();
+    });
+
+    // EXPORT NAAR JPG
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const svgElement = document.getElementById('main-svg');
+      const svgString = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1350;
+        const context = canvas.getContext('2d');
+
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, 1080, 1350);
+        context.drawImage(image, 0, 0, 1080, 1350);
+
+        const jpegUrl = canvas.toDataURL('image/jpeg', 0.95);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = jpegUrl;
+        downloadLink.download = 'rtv-utrecht-post.jpg';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      };
+      image.src = blobURL;
+    });
+  </script>
+</body>
+</html>
