@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1350">
+  <defs>
+    <style>
+      .st-red { fill: #d91423; }
+      .st-white { fill: #fff; }
+      .st-logo-shadow { filter: url(#drop-shadow-1); }
+
+      /* Tekststijlen */
+      .txt-onderwerp {
+        fill: #fff;
+        font-size: 45px;
+        font-family: 'Haptic-SemiBold', 'Haptic', sans-serif;
+        font-weight: 600;
+      }
+      .txt-kop {
+        fill: #fff;
+        font-size: 57px;
+        font-family: 'Haptic-SemiBold', 'Haptic', sans-serif;
+        font-weight: 600;
+      }
+    </style>
+
+    <!-- Schaduwfilter voor logo -->
+    <filter id="drop-shadow-1" x="59.94" y="25" width="198.48" height="120" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur" stdDeviation="10"/>
+      <feFlood flood-color="#000" flood-opacity=".5"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <!-- 1. FOTO LAAG (Achtergrond) -->
+  <!-- JavaScript kan het 'href' attribuut van deze afbeelding aanpassen wanneer een gebruiker een foto uploadt -->
+  <image id="user-photo" x="0" y="0" width="1080" height="1350" preserveAspectRatio="xMidYMid slice" href="placeholder.jpg" />
+
+  <!-- 2. ACHTERGRONDBALKEN (Breedte wordt via JS berekend) -->
+  <g id="BALKEN">
+    <!-- Vaste rood blokje links van het onderwerp -->
+    <rect id="blokje-onderwerp" class="st-red" x="90" y="940" width="60" height="60" rx="6" ry="6" />
+
+    <!-- Adaptieve balken (width start op 0 of minimale breedte) -->
+    <rect id="balk-onderwerp" class="st-red" x="160" y="940" width="0" height="60" rx="6" ry="6" />
+    <rect id="balk-kop-1" class="st-white" x="90" y="1010" width="0" height="75" rx="5" ry="5" />
+    <rect id="balk-kop-2" class="st-white" x="90" y="1095" width="0" height="75" rx="6" ry="6" />
+  </g>
+
+  <!-- 3. TEKSTEN -->
+  <g id="TEKSTEN">
+    <text id="text-onderwerp" class="txt-onderwerp" transform="translate(180 985.37)"></text>
+    <text id="text-kop-1" class="txt-kop" transform="translate(105 1066.96)"></text>
+    <text id="text-kop-2" class="txt-kop" transform="translate(105 1151.96)"></text>
+  </g>
+
+  <!-- 4. LOGO (Onveranderd, geoptimaliseerd) -->
+  <g id="LOGO" class="st-logo-shadow">
+    <rect class="st-red" x="90" y="55" width="12.28" height="12.28" rx="1.24" ry="1.24"/>
+    <path class="st-red" d="M91.24,70.86h9.79c.68,0,1.24.56,1.24,1.24v9.79c0,.69-.56,1.24-1.24,1.24h-9.79c-.68,0-1.24-.56-1.24-1.24v-9.79c0-.68.56-1.24,1.24-1.24Z"/>
+    <rect class="st-red" x="90" y="86.71" width="12.28" height="12.28" rx="1.24" ry="1.24"/>
+    <path class="st-red" d="M91.24,102.57h9.79c.68,0,1.24.56,1.24,1.24v9.79c0,.69-.56,1.24-1.24,1.24h-9.79c-.68,0-1.24-.56-1.24-1.24v-9.79c0-.68.56-1.24,1.24-1.24Z"/>
+    <path class="st-white" d="M121.23,64.01c0-3.32-2.48-4.28-5.01-4.28-1.28,0-1.84.04-2.28.08-.04,1.84-.08,5.81-.08,8.65h2.6c2.6,0,4.77-1.08,4.77-4.45M108.45,56.12c1.68-.2,4.88-.44,8.09-.44,5.89,0,10.17,2.16,10.17,8.37,0,4.88-2.76,6.97-5.17,7.37,5.01,8.53,5.69,9.17,6.53,10.09-1.32,1.2-2.48,1.72-3.76,1.72-1.16-.04-2.04-.56-2.64-1.68l-4.96-9.25h-2.84l.04,10.65-5.49.2s.16-9.85.16-14.94-.12-10.17-.12-12.09"/>
+    <path class="st-white" d="M128.65,60.04c-.16-3-.04-3.44.32-3.8.28-.28.72-.4,2.08-.4h18.34c.16,3,.08,3.4-.32,3.8-.28.28-.72.4-2.08.4l-5.25-.04c0,7.57,0,13.54.08,22.94l-5.57.2c.12-9.61.04-17.46.04-23.15l-7.65.04Z"/>
+    <path class="st-white" d="M167.28,57.56c.32-1.44.64-1.8,4.33-1.8,1.2,0,1.44.76,1.04,2.08l-7.81,25.03s-4.72.6-6.97.28l-7.05-25.03c-.48-1.8-.08-2.36,3.56-2.36,1.52,0,1.8.32,2.12,1.76l5.25,21.26,5.53-21.22Z"/>
+    <path class="st-white" d="M123.95,89.41c0-1.36.56-1.88,3.8-1.88,1.16,0,1.72.28,1.72,1.36,0,2.04-.08,6.45-.08,16.58,0,6.41-4.13,9.45-10.61,9.45s-10.53-3.12-10.53-9.49c0-9.29-.04-14.41-.04-16.02,0-1.36.6-1.88,3.84-1.88,1.16,0,1.72.28,1.72,1.36,0,2.04-.16,12.69-.16,15.78,0,4.12,1.44,6.21,5.17,6.21s5.24-2.08,5.24-6.21c0-3.24-.08-13.65-.08-15.26"/>
+    <path class="st-white" d="M131.97,98.82c-.32-2.36-.32-2.96.12-3.4.32-.32.76-.4,2.68-.32l.36-3.12c.16-1.4,2.04-1.88,3-1.88,1.12,0,1.68.32,1.68,1.24v3.84l4.56-.12c.28,2.28.2,3.08-.24,3.48-.32.36-1.28.32-4.36.2l-.04,9.97c0,2.16.8,2.64,2.48,2.64.56,0,1.52-.24,1.88-.32.48,1.96.28,2.48-.16,2.96-.48.44-1.68.92-4.32.92-2.92,0-5.01-1.2-4.97-4.68l.08-11.49-2.76.08Z"/>
+    <path class="st-white" d="M152.12,101.67v13.05l-5.21.2c.08-5.57.08-9.61.08-12.61,0-1.6-.12-4.08-.12-5.45,0-1.2,1.16-1.8,3.84-1.8.96,0,1.28.52,1.28,1.2s-.08,1.4-.2,2.28l.12.08c1.52-2.4,3.48-3.56,4.88-3.56.68,0,1.12.12,1.44.4.36.4.56.84.28,3.76-2.4-.2-4.25.6-6.41,2.44"/>
+    <path class="st-white" d="M172.36,103.19c.12-3.16-1.32-4.48-3.28-4.48-2.4,0-4.04,1.96-4.24,4.56l7.53-.08ZM177.32,103.87c0,1.48-.68,2.04-2.2,2.04-2.72,0-8.49,0-10.33-.04-.16,4,1.76,5.28,5.33,5.28,2.64,0,5.05-.6,5.97-.88.64,2.08.52,2.48.08,2.92-.8.8-3.28,1.72-7.01,1.72-5.65,0-9.73-2.76-9.73-9.29,0-7.05,3.88-10.57,9.65-10.57,5.25,0,8.25,2.44,8.25,8.81"/>
+    <path class="st-white" d="M189.33,111.28c1.76,0,2.96-.36,3.64-.6.68,1.92.6,2.36.04,2.88-.6.6-2.28,1.44-5.37,1.44-4.73,0-8.25-2.84-8.25-9.73,0-7.61,3.93-10.21,8.57-10.21,2.52,0,4.28.84,4.96,1.52.48.44.6.84-.24,2.8-.64-.16-1.8-.52-3.32-.52-2.84,0-4.65,1.72-4.65,6.37.04,4.56,1.8,6.05,4.61,6.05"/>
+    <path class="st-white" d="M208.39,102.91c0-2.8-.76-3.8-2.6-3.8-1.68,0-3.32,1.2-4.73,2.56v13.05l-5.01.2s.16-8.93.16-13.57c0-3.8-.12-11.09-.12-13.89,0-1.24,1-1.84,3.64-1.84,1.24,0,1.6.48,1.6,1.32,0,1.56-.16,8.17-.28,10.57l-.32.92.12.08c1.76-1.8,4-3.44,7.01-3.44,3.8,0,5.73,2.24,5.73,6.97,0,9.45-.16,10.73.16,12.69-.48.12-2.12.16-3.12.16-1.56,0-2.32-.96-2.32-2.24,0-1.52.08-5.53.08-9.73"/>
+    <path class="st-white" d="M215.72,98.82c-.32-2.36-.32-2.96.12-3.4.32-.32.76-.4,2.68-.32l.36-3.12c.16-1.4,2.04-1.88,3-1.88,1.12,0,1.68.32,1.68,1.24v3.84l4.56-.12c.28,2.28.2,3.08-.24,3.48-.32.36-1.28.32-4.36.2l-.04,9.97c0,2.16.8,2.64,2.48,2.64.56,0,1.52-.24,1.88-.32.48,1.96.28,2.48-.16,2.96-.48.44-1.68.92-4.32.92-2.92,0-5.01-1.2-4.97-4.68l.08-11.49-2.76.08Z"/>
+  </g>
+</svg>
+
+<script>
+    function updateBalk(textId, balkId, padding = 40) {
+      const textEl = document.getElementById(textId);
+      const balkEl = document.getElementById(balkId);
+
+      // Pak de exacte breedte van de getypte tekst
+      const textWidth = textEl.getBBox().width;
+
+      // Als er geen tekst is, verberg de balk
+      if (textWidth === 0) {
+        balkEl.setAttribute('width', 0);
+      } else {
+        // Stel de breedte in inclusief padding
+        balkEl.setAttribute('width', textWidth + padding);
+      }
+    }
+
+    // Luister naar de input-velden op je pagina
+    document.getElementById('input-kop-1').addEventListener('input', (e) => {
+      const textEl = document.getElementById('text-kop-1');
+      textEl.textContent = e.target.value;
+      updateBalk('text-kop-1', 'balk-kop-1', 40);
+    });
+  </script>
+
+</body>
+</html>
