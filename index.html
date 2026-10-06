@@ -69,4 +69,34 @@
     <path class="st-white" d="M208.39,102.91c0-2.8-.76-3.8-2.6-3.8-1.68,0-3.32,1.2-4.73,2.56v13.05l-5.01.2s.16-8.93.16-13.57c0-3.8-.12-11.09-.12-13.89,0-1.24,1-1.84,3.64-1.84,1.24,0,1.6.48,1.6,1.32,0,1.56-.16,8.17-.28,10.57l-.32.92.12.08c1.76-1.8,4-3.44,7.01-3.44,3.8,0,5.73,2.24,5.73,6.97,0,9.45-.16,10.73.16,12.69-.48.12-2.12.16-3.12.16-1.56,0-2.32-.96-2.32-2.24,0-1.52.08-5.53.08-9.73"/>
     <path class="st-white" d="M215.72,98.82c-.32-2.36-.32-2.96.12-3.4.32-.32.76-.4,2.68-.32l.36-3.12c.16-1.4,2.04-1.88,3-1.88,1.12,0,1.68.32,1.68,1.24v3.84l4.56-.12c.28,2.28.2,3.08-.24,3.48-.32.36-1.28.32-4.36.2l-.04,9.97c0,2.16.8,2.64,2.48,2.64.56,0,1.52-.24,1.88-.32.48,1.96.28,2.48-.16,2.96-.48.44-1.68.92-4.32.92-2.92,0-5.01-1.2-4.97-4.68l.08-11.49-2.76.08Z"/>
   </g>
+
 </svg>
+
+  <!-- JavaScript toevoegen -->
+  <script>
+    function updateBalk(textId, balkId, padding = 40) {
+      const textEl = document.getElementById(textId);
+      const balkEl = document.getElementById(balkId);
+
+      // Pak de exacte breedte van de getypte tekst
+      const textWidth = textEl.getBBox().width;
+
+      // Als er geen tekst is, verberg de balk
+      if (textWidth === 0) {
+        balkEl.setAttribute('width', 0);
+      } else {
+        // Stel de breedte in inclusief padding
+        balkEl.setAttribute('width', textWidth + padding);
+      }
+    }
+
+    // Luister naar de input-velden op je pagina
+    document.getElementById('input-kop-1').addEventListener('input', (e) => {
+      const textEl = document.getElementById('text-kop-1');
+      textEl.textContent = e.target.value;
+      updateBalk('text-kop-1', 'balk-kop-1', 40);
+    });
+  </script>
+
+</body>
+</html>
