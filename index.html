@@ -123,14 +123,14 @@
     </div>
 
     <div class="field-group">
-      <label>Foto Positie X</label>
+      <label>Foto Positie X (Horizontaal)</label>
       <div class="range-group">
         <input type="range" id="pos-x-slider" min="-1000" max="1000" step="5" value="0">
       </div>
     </div>
 
     <div class="field-group">
-      <label>Foto Positie Y</label>
+      <label>Foto Positie Y (Verticaal)</label>
       <div class="range-group">
         <input type="range" id="pos-y-slider" min="-1000" max="1000" step="5" value="0">
       </div>
@@ -167,18 +167,20 @@
           .txt-onderwerp {
             fill: #ffffff;
             font-size: 45px;
-            font-family: 'Haptic', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Haptic', Arial, Helvetica, sans-serif;
             font-weight: 600;
+            dominant-baseline: middle;
           }
           .txt-kop {
             fill: #000000;
             font-size: 57px;
-            font-family: 'Haptic', 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Haptic', Arial, Helvetica, sans-serif;
             font-weight: 600;
+            dominant-baseline: middle;
           }
         </style>
 
-        <filter id="drop-shadow-1" x="0" y="0" width="300" height="200" filterUnits="userSpaceOnUse">
+        <filter id="drop-shadow-1" x="0" y="0" width="400" height="300" filterUnits="userSpaceOnUse">
           <feOffset dx="0" dy="0"/>
           <feGaussianBlur result="blur" stdDeviation="10"/>
           <feFlood flood-color="#000" flood-opacity=".5"/>
@@ -189,13 +191,14 @@
 
       <!-- 1. ACHTERGROND & FOTO -->
       <rect width="1080" height="1350" fill="#1a1a1a" />
-      <g id="photo-container">
-        <image id="user-photo" href="" x="0" y="0" />
+      
+      <g id="photo-group">
+        <image id="user-photo" width="1080" height="1350" x="0" y="0" />
       </g>
 
       <!-- 2. ACHTERGRONDBALKEN -->
       <g id="BALKEN">
-        <rect id="blokje-onderwerp" class="st-red" x="90" y="940" width="60" height="60" rx="6" ry="6" style="display: none;" />
+        <rect id="blokje-onderwerp" class="st-red" x="90" y="940" width="60" height="60" rx="6" ry="6" visibility="hidden" />
         <rect id="balk-onderwerp" class="st-red" x="160" y="940" width="0" height="60" rx="6" ry="6" />
         <rect id="balk-kop-1" class="st-white" x="90" y="1010" width="0" height="75" rx="6" ry="6" />
         <rect id="balk-kop-2" class="st-white" x="90" y="1095" width="0" height="75" rx="6" ry="6" />
@@ -203,9 +206,9 @@
 
       <!-- 3. TEKSTEN -->
       <g id="TEKSTEN">
-        <text id="text-onderwerp" class="txt-onderwerp" x="180" y="985"></text>
-        <text id="text-kop-1" class="txt-kop" x="115" y="1066"></text>
-        <text id="text-kop-2" class="txt-kop" x="115" y="1151"></text>
+        <text id="text-onderwerp" class="txt-onderwerp" x="180" y="970"></text>
+        <text id="text-kop-1" class="txt-kop" x="115" y="1047.5"></text>
+        <text id="text-kop-2" class="txt-kop" x="115" y="1132.5"></text>
       </g>
 
       <!-- 4. LOGO -->
@@ -230,38 +233,47 @@
 
   <script>
     let posX = 0, posY = 0, scale = 1;
-    let imgWidth = 1080, imgHeight = 1350;
+    let rawImgWidth = 1080, rawImgHeight = 1350;
 
-    function updateBalk(textId, balkId, padding = 50) {
+    function updateBalk(textId, balkId, padding) {
       const textEl = document.getElementById(textId);
       const balkEl = document.getElementById(balkId);
       
-      // Gebruik getBoundingClientRect voor betrouwbare breedteberekening
-      const textWidth = textEl.getComputedTextLength ? textEl.getComputedTextLength() : textEl.getBBox().width;
-
       if (!textEl.textContent || textEl.textContent.trim() === '') {
         balkEl.setAttribute('width', 0);
-      } else {
-        balkEl.setAttribute('width', textWidth + padding);
+        return;
       }
+
+      let w = 0;
+      try {
+        w = textEl.getBBox().width;
+      } catch (e) {
+        w = textEl.textContent.length * 30; // Fallback schatting
+      }
+
+      if (isNaN(w) || w === 0) {
+        w = textEl.textContent.length * 30;
+      }
+
+      balkEl.setAttribute('width', w + padding);
     }
 
     function updateTransform() {
-      const imgEl = document.getElementById('user-photo');
-      const cx = imgWidth / 2;
-      const cy = imgHeight / 2;
+      const photoGroup = document.getElementById('photo-group');
+      const cx = rawImgWidth / 2;
+      const cy = rawImgHeight / 2;
 
-      const transformStr = `translate(${540 + posX} ${675 + posY}) scale(${scale}) translate(${-cx} ${-cy})`;
-      imgEl.setAttribute('transform', transformStr);
+      const transformStr = `translate(${540 + posX}, ${675 + posY}) scale(${scale}) translate(${-cx}, ${-cy})`;
+      photoGroup.setAttribute('transform', transformStr);
     }
 
-    // TEKST INPUT LISTENERS
+    // INPUT LISTENERS FOR TEXT
     document.getElementById('input-onderwerp').addEventListener('input', (e) => {
       const textEl = document.getElementById('text-onderwerp');
       const blokjeEl = document.getElementById('blokje-onderwerp');
       textEl.textContent = e.target.value;
       updateBalk('text-onderwerp', 'balk-onderwerp', 40);
-      blokjeEl.style.display = e.target.value.trim() !== "" ? "block" : "none";
+      blokjeEl.setAttribute('visibility', e.target.value.trim() !== "" ? "visible" : "hidden");
     });
 
     document.getElementById('input-kop-1').addEventListener('input', (e) => {
@@ -276,28 +288,30 @@
       updateBalk('text-kop-2', 'balk-kop-2', 50);
     });
 
-    // FOTO UPLOAD
+    // FOTO UPLOAD LOGICA
     document.getElementById('input-photo').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(event) {
+        const dataUrl = event.target.result;
         const imgEl = document.getElementById('user-photo');
-        
-        // Maak een HTML-afbeelding aan om de afmetingen uit te lezen
-        const i = new Image();
-        i.onload = function() {
-          imgWidth = i.width;
-          imgHeight = i.height;
 
-          imgEl.setAttribute('width', imgWidth);
-          imgEl.setAttribute('height', imgHeight);
-          imgEl.setAttribute('href', event.target.result);
+        const tempImg = new Image();
+        tempImg.onload = function() {
+          rawImgWidth = tempImg.naturalWidth || 1080;
+          rawImgHeight = tempImg.naturalHeight || 1350;
 
-          // Schaal berekenen zodat de foto vullend start
-          const scaleX = 1080 / imgWidth;
-          const scaleY = 1350 / imgHeight;
+          imgEl.setAttribute('width', rawImgWidth);
+          imgEl.setAttribute('height', rawImgHeight);
+          
+          // Zowel href als xlink:href zetten voor brede browser-ondersteuning
+          imgEl.setAttribute('href', dataUrl);
+          imgEl.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataUrl);
+
+          const scaleX = 1080 / rawImgWidth;
+          const scaleY = 1350 / rawImgHeight;
           scale = Math.max(scaleX, scaleY);
 
           document.getElementById('scale-slider').value = scale;
@@ -308,7 +322,7 @@
 
           updateTransform();
         };
-        i.src = event.target.result;
+        tempImg.src = dataUrl;
       };
       reader.readAsDataURL(file);
     });
